@@ -11,6 +11,7 @@ A Python CLI tool for cleaning CSV files by removing duplicate rows. Supports bo
 - Data normalization (trim + case-insensitive comparison)
 - Keeps original CSV header intact
 - Safe handling of empty datasets
+- Dry-run mode (no side effects)
 - Duplicate statistics reporting
     
 ---
@@ -23,10 +24,10 @@ python src/main.py --input <input_file> --output <output_file> --column <column_
 
 ---
 
-## Example
+## Dry-Run
 
 ```bash
-python src/main.py --input data.csv --output clean.csv --column name\
+python src/main.py --input data.csv --output cleaned.csv --dry-run
 ```
 
 ---
@@ -46,10 +47,10 @@ README.md
 
 ## Use Cases
 
-- Cleaning user datasets (emails, names, IDs)
-- Preparing CSV files for analytics
-- Removing duplicates before database import
-- Data preprocessing for ML pipelines
+- Data preprocessing tasks
+- Cleaning exports from Excel / Google Sheets
+- Lightweight ETL pipelines
+- Automation scripts
   
 ---
 
