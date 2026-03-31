@@ -13,6 +13,7 @@ def main():
     parser = argparse.ArgumentParser(description="Clean CSV files from duplicates")
     parser.add_argument("--input", required=True, help="Input CSV file")
     parser.add_argument("--output", required=True, help="Output CSV file")
+    parser.add_argument("--column", help="Column name to deduplicate on")
     args = parser.parse_args()
 
     rows = read_csv(args.input)
@@ -21,7 +22,7 @@ def main():
         logging.error("Empty input file")
         sys.exit(1)
 
-    cleaned, duplicates = clean_data(rows)
+    cleaned, duplicates = clean_data(rows, args.column)
 
     if not cleaned:
         logging.error("No valid data found")
