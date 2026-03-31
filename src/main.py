@@ -14,6 +14,7 @@ def main():
     parser.add_argument("--input", required=True, help="Input CSV file")
     parser.add_argument("--output", required=True, help="Output CSV file")
     parser.add_argument("--column", help="Column name to deduplicate on")
+    parser.add_argument("--dry-run", action="store_true", help="Preview changes without writing output file")
     args = parser.parse_args()
 
     rows = read_csv(args.input)
@@ -28,10 +29,14 @@ def main():
         logging.error("No valid data found")
         sys.exit(1)
 
-    write_csv(args.output, cleaned)
-
-    logging.info(f"Duplicates removed: {duplicates}")
-    logging.info("CSV cleaning completed successfully")
+    if args.dry_run:
+        logging.info("DRY RUN MODE - no file written")
+        logging.info(f"Rows after cleaning: {len(cleaned)}")
+        logging.info(f"Duplicates removed: {duplicates}")
+    else:
+        write_csv(args.output, cleaned)
+        logging.info(f"Duplicates removed: {duplicates}")
+        logging.info("CSV cleaning completed successfully")
 
 if __name__ == "__main__":
     main()
