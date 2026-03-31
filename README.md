@@ -1,22 +1,32 @@
 # CSV Cleaner CLI Tool
 
-A lightweight Python CLI tool that removes duplicate rows from CSV files while preserving the header.
+A Python CLI tool for cleaning CSV files by removing duplicate rows. Supports both full-row and column-based deduplication with basic data normalization.
 
 ---
 
 ## Features
 
-- Removes duplicate rows from CSV files  
-- Keeps original header intact  
-- Reports statistics (input, output, duplicates removed)  
-- Handles empty or missing files safely  
-
+- Full-row duplicate removal
+- Column-based duplicate removal (`--column`)
+- Data normalization (trim + case-insensitive comparison)
+- Keeps original CSV header intact
+- Safe handling of empty datasets
+- Duplicate statistics reporting
+    
 ---
 
 ## Usage
 
 ```bash
-python src/main.py --input <input_file> --output <output_file>
+python src/main.py --input <input_file> --output <output_file> --column <column_name>
+```
+
+---
+
+## Example
+
+```bash
+python src/main.py --input data.csv --output clean.csv --column name\
 ```
 
 ---
@@ -34,10 +44,20 @@ README.md
 
 ---
 
+## Use Cases
+
+- Cleaning user datasets (emails, names, IDs)
+- Preparing CSV files for analytics
+- Removing duplicates before database import
+- Data preprocessing for ML pipelines
+  
+---
+
 ## Note
 
-No sample data is included.  
-Provide your own CSV file via CLI arguments.
+- No sample dataset is included.
+- Input file must be a valid CSV.
+- Column name must match header exactly.
 
 ---
 
