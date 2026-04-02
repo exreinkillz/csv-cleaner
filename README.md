@@ -1,71 +1,67 @@
-# CSV Cleaner CLI Tool
+# CSV Cleaner (Python Automation Tool)
 
-A Python CLI tool for cleaning CSV files by removing duplicate rows. Supports both full-row and column-based deduplication with basic data normalization.
+Do you have messy CSV files (including Excel exports) with duplicate rows, missing values, or inconsistent formatting?
+
+This tool automatically cleans and standardizes your data in seconds.
 
 ---
 
-## Features
+## 🔧 What it does
 
-- Full-row duplicate removal
-- Column-based duplicate removal (`--column`)
-- Data normalization (trim + case-insensitive comparison)
-- Keeps original CSV header intact
-- Safe handling of empty datasets
-- Dry-run mode (no side effects)
-- Duplicate statistics reporting
-    
+- Removes duplicate rows (full or based on a specific column)
+- Cleans and normalizes messy data (trimming, case handling)
+- Keeps your original structure intact
+- Outputs a clean, ready-to-use CSV file
+
 ---
 
-## Usage
+## ⚡ Example
+
+### Before (messy data)
+
+```csv
+Name,Email,Email
+Alex,,alex@mail.com
+Alex,,alex@mail.com
+```
+
+### After (clean data)
+
+```csv
+name,email
+alex,alex@mail.com
+```
+
+## 🚀 Features
+
+- Remove duplicate rows (full or by column)
+- Clean messy data (trim, normalize text)
+- Safe processing (no data loss)
+- Dry-run mode (preview before cleaning)
+
+## 🧩 Quick Start
+
+```bash
+python src/main.py --input messy.csv --output clean.csv
+```
+Column included usage:
 
 ```bash
 python src/main.py --input <input_file> --output <output_file> --column <column_name>
 ```
-
----
-
-## Dry-Run
+Dry-run usage:
 
 ```bash
-python src/main.py --input data.csv --output cleaned.csv --dry-run
+python src/main.py --input <input_file> --output <output_file> --dry-run
 ```
 
----
+## 💡 Common Use Cases
 
-## Project Structure
+- Cleaning Excel/CSV exports
+- Preparing data for analysis
+- Fixing messy datasets from clients or reports
+- Automating repetitive data cleaning tasks
 
-```
-src/
-  main.py
-  csv_cleaner.py
+## 🎯 Why use this tool?
 
-.gitignore
-README.md
-```
-
----
-
-## Use Cases
-
-- Data preprocessing tasks
-- Cleaning exports from Excel / Google Sheets
-- Lightweight ETL pipelines
-- Automation scripts
-  
----
-
-## Note
-
-- No sample dataset is included.
-- Input file must be a valid CSV.
-- Column name must match header exactly.
-
----
-
-## Tech Stack
-
-- Python 3  
-- argparse (CLI)  
-- csv module  
-- logging  
-
+Instead of manually cleaning messy data in Excel, this tool automates the process and saves you time.
