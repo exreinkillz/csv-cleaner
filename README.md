@@ -1,17 +1,24 @@
-# CSV Cleaner (Python Automation Tool)
+# CSV Cleaner – Lightweight Python CLI Tool
 
-Do you have messy CSV files (including Excel exports) with duplicate rows, missing values, or inconsistent formatting?
-
-This tool automatically cleans and standardizes your data in seconds.
+A lightweight CLI tool for cleaning CSV files by removing duplicates, invalid rows, and normalizing data.
 
 ---
 
 ## 🔧 What it does
 
-- Removes duplicate rows (full or based on a specific column)
-- Cleans and normalizes messy data (trimming, case handling)
-- Keeps your original structure intact
-- Outputs a clean, ready-to-use CSV file
+- Duplicate row removal (full row or column-based key)
+- Data validation (email, integer)
+- Empty row filtering
+- Normalization (whitespace trimming)
+- Dry-run mode for safe preview
+  
+---
+
+## Output
+
+The tool generates:
+- Cleaned CSV file
+- Processing statistics (duplicates, invalid rows, rule failures)
 
 ---
 
