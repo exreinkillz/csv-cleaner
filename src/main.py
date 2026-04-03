@@ -23,7 +23,10 @@ def main():
         logging.error("Empty input file")
         sys.exit(1)
 
-    cleaned, duplicates = clean_data(rows, args.column)
+    cleaned, stats = clean_data(
+        rows,
+        dedupe_keys=[args.column] if args.column else None
+    )
 
     if not cleaned:
         logging.error("No valid data found")
@@ -32,10 +35,10 @@ def main():
     if args.dry_run:
         logging.info("DRY RUN MODE - no file written")
         logging.info(f"Rows after cleaning: {len(cleaned)}")
-        logging.info(f"Duplicates removed: {duplicates}")
+        logging.info(f"Duplicates removed: {len(stats['duplicate_rows'])}")
     else:
         write_csv(args.output, cleaned)
-        logging.info(f"Duplicates removed: {duplicates}")
+        logging.info(f"Duplicates removed: {len(stats['duplicate_rows'])}")
         logging.info("CSV cleaning completed successfully")
 
 if __name__ == "__main__":
