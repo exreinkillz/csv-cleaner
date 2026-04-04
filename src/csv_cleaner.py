@@ -4,12 +4,20 @@ import re
 EMAIL_REGEX = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 def read_csv(file):
-    with open(file, "r", newline="", encoding="utf-8") as f:
-        return list(csv.reader(f))
+    try:
+        with open(file, "r", newline="", encoding="utf-8") as f:
+            return list(csv.reader(f))
+    except FileNotFoundError:
+        raise Exception(f"Input file not found: {file}")
+    except Exception as e:
+        raise Exception(f"Failed to read CSV: {e}")
 
 def write_csv(file, rows):
-    with open(file, "w", newline="", encoding="utf-8") as f:
-        csv.writer(f).writerows(rows)
+    try:
+        with open(file, "w", newline="", encoding="utf-8") as f:
+            csv.writer(f).writerows(rows)
+    except Exception as e:
+        raise Exception(f"Failed to write to CSV: {e}")
 
 def normalize_row(row):
     return [cell.strip() for cell in row]
@@ -24,7 +32,7 @@ def is_int(value):
     try:
         int(value)
         return True
-    except:
+    except ValueError:
         return False
 
 VALIDATORS = {
@@ -32,50 +40,64 @@ VALIDATORS = {
     "int": is_int,
 }
 
-def apply_rules(row, header, rules):
-    """
-    rules example:
-    {
-        "email": "email",
-        "age": "int"
-    } 
-    """
-
+def apply_rules(row, header_map, rules):
     failures = []
 
     for col_name, rule in rules.items():
-        if col_name not in header:
-            failures.append(f"invalid_column:{col_name}")
+        if col_name not in header_map:
+            failures.append({
+                "column": col_name,
+                "error": "invalid_column"
+            })
             continue
 
-        idx = header.index(col_name)
+        idx = header_map(col_name)
         value = row[idx].strip()
 
         validator = VALIDATORS.get(rule)
 
         if not validator:
-            failures.append(f"unknown_rule:{rule}")
+            failures.append({
+                "column": col_name,
+                "error": "unknown_rule",
+                "rule": rule
+            })
             continue
 
         if not validator(value):
-            failures.append(f"{col_name}:{rule}:{value}")
+            failures.append({
+                "column": col_name,
+                "rule": rule,
+                "value": value
+            })
 
     if failures:
         return False, failures
 
     return True, None
 
-def deduplicate(rows, key_columns=None):
+def deduplicate(rows, header_map, key_columns=None):
     seen = set()
     result = []
     duplicates = []
+
+    if key_columns:
+        for col in key_columns:
+            if col not in header_map:
+                raise Exception(f"Column not found in header: {col}")
 
     for row in rows:
         if key_columns:
             key = []
             for col in key_columns:
-                if col in row:
-                    key.append(row[col].strip().lower())
+                idx = header_map(col)
+                value = row[idx].strip().lower()
+
+                if not value:
+                    value = "__EMPTY__"
+
+                key.append(value)
+
             key = tuple(key)
         else:
             key = tuple(cell.strip().lower() for cell in row)
@@ -89,13 +111,14 @@ def deduplicate(rows, key_columns=None):
 
     return result, duplicates
 
-def clean_data(rows, rules=None, dedupe_keys=None):
-    """
-    returns:
-        cleaned_rows, stats
-    """
 
+def clean_data(rows, rules=None, dedupe_keys=None):
     stats = {
+        "total_rows": 0,
+        "clean_rows": 0,
+        "duplicates_removed": 0,
+        "invalid_count": 0,
+        "rule_fail_count": 0,
         "invalid_rows": [],
         "duplicate_rows": [],
         "rule_failures": [],
@@ -107,10 +130,12 @@ def clean_data(rows, rules=None, dedupe_keys=None):
     header = normalize_row(rows[0])
     data = rows[1:]
 
+    header_map = {col: idx for idx, col in enumerate(header)}
+
     data = remove_empty_rows(data)
     data = [normalize_row(row) for row in data]
 
-    data, dup_rows = deduplicate(data, dedupe_keys)
+    data, dup_rows = deduplicate(data, header_map, dedupe_keys)
     stats["duplicate_rows"] = dup_rows
 
     cleaned = [header]
@@ -121,7 +146,7 @@ def clean_data(rows, rules=None, dedupe_keys=None):
             continue
 
         if rules:
-            ok, failures = apply_rules(row, header, rules)
+            ok, failures = apply_rules(row, header_map, rules)
             if not ok:
                 stats["rule_failures"].append({
                     "row": row,
@@ -130,5 +155,11 @@ def clean_data(rows, rules=None, dedupe_keys=None):
                 continue
 
         cleaned.append(row)
+
+    stats["total_rows"] = len(rows) - 1
+    stats["clean_rows"] = len(cleaned) - 1
+    stats["duplicates_removed"] = len(stats["duplicate_rows"])
+    stats["invalid_count"] = len(stats["invalid_rows"])
+    stats["rule_fail_count"] = len(stats["rule_failures"])
 
     return cleaned, stats
