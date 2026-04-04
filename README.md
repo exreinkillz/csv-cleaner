@@ -1,74 +1,119 @@
-# CSV Cleaner – Lightweight Python CLI Tool
+# CSV Data Cleaner & Validator (Python CLI)
 
-A lightweight CLI tool for cleaning CSV files by removing duplicates, invalid rows, and normalizing data.
+Clean, validate, and deduplicate messy CSV files in seconds — without manual work.
 
 ---
 
-## 🔧 What it does
+## 🚨 Problem
 
-- Duplicate row removal (full row or column-based key)
+Messy CSV files often contain:
+- Duplicate entries
+- Invalid data (emails, numbers)
+- Inconsistent formatting
+- Empty or broken rows
+
+Cleaning them manually in Excel is slow, error-prone, and not scalable.
+
+---
+
+## ✅ Solution
+
+This tool automates CSV cleaning by:
+
+- Removing duplicate rows (full or column-based)
+- Validating data using custom rules
+- Normalizing and cleaning raw data
+- Generating detailed processing reports
+
+---
+
+## ⚙️ Features
+
+- Deduplication (full row or specific columns)
 - Data validation (email, integer)
-- Empty row filtering
-- Normalization (whitespace trimming)
-- Dry-run mode for safe preview
-  
----
-
-## Output
-
-The tool generates:
-- Cleaned CSV file
-- Processing statistics (duplicates, invalid rows, rule failures)
+- Data normalization (whitespace trimming)
+- Empty row removal
+- Dry-run mode (preview changes safely)
+- JSON report generation
+- Robust error handling
 
 ---
 
-## ⚡ Example
+## 🚀 Example Usage
 
-### Before (messy data)
-
-```csv
-Name,Email,Email
-Alex,,alex@mail.com
-Alex,,alex@mail.com
+```bash
+python src/main.py \
+  --input messy.csv \
+  --output clean.csv \
+  --column email \
+  --rules email=email age=int \
+  --report report.json
 ```
 
-### After (clean data)
+---
 
-```csv
-name,email
-alex,alex@mail.com
+## 📊 Example Output
+
+```bash
+Total rows: 1000
+Clean rows: 820
+Duplicates removed: 120
+Invalid rows: 60
+Rule failures: 40
 ```
 
-## 🚀 Features
+## 📁 Report Example (JSON)
 
-- Remove duplicate rows (full or by column)
-- Clean messy data (trim, normalize text)
-- Safe processing (no data loss)
-- Dry-run mode (preview before cleaning)
+```json
+{
+  "total_rows": 1000,
+  "clean_rows": 820,
+  "duplicates_removed": 120,
+  "invalid_count": 60,
+  "rule_fail_count": 40
+}
+```
+
+## 🧪 Example Workflow
+
+- Input (messy.csv)
+```csv
+name,age,email
+Alex,23,alex@mail.com
+Alex,23,alex@mail.com
+Emma,,emma@mail.com
+```
+
+- Output(clean.csv)
+```csv
+name,age,email
+Alex,23,alex@mail.com
+Emma,,emma@mail.com
+```
 
 ## 🧩 Quick Start
-
+- Normal run(Without any rules)
 ```bash
 python src/main.py --input messy.csv --output clean.csv
 ```
-Column included usage:
-
+- With validation rules:
 ```bash
-python src/main.py --input <input_file> --output <output_file> --column <column_name>
+python src/main.py --input messy.csv --output clean.csv --rules email=email age=int
 ```
-Dry-run usage:
-
+- Dry-Run preview:
 ```bash
-python src/main.py --input <input_file> --output <output_file> --dry-run
+python src/main.py --input messy.csv --dry-run
 ```
 
-## 💡 Common Use Cases
+## 🎯 Use Cases
+- Cleaning CSV exports from Excel or Google Sheets
+- Preparing datasets for analysis
+- Freelance data cleaning tasks
+- Automating repetitive data cleanup
 
-- Cleaning Excel/CSV exports
-- Preparing data for analysis
-- Fixing messy datasets from clients or reports
-- Automating repetitive data cleaning tasks
-
-## 🎯 Why use this tool?
-
-Instead of manually cleaning messy data in Excel, this tool automates the process and saves you time.
+## 💡 Why This Tool?
+Unlike simple CSV cleaners, this tool:
+- Validates data (not just cleans it)
+- Provides detailed processing insights
+- Supports safe preview before execution
+- Handles real-world messy datasets
